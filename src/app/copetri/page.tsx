@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import hrLabLogo from "../../../public/img/hrlab_logo.svg";
 
-export function getCopetriFair() {
+function getCopetriFair() {
   return prisma.fair.findFirst({
     where: { name: "Copetri" },
     include: {

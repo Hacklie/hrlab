@@ -6,7 +6,7 @@ import hrLabLogo from "../../public/img/hrlab_logo.svg";
 
 // import FairsJSON from "../data/fairs.mock.json";
 
-export function getFairs() {
+function getFairs() {
   return prisma.fair.findMany({
     include: {
       address: true,
