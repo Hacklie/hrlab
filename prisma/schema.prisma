@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Fair {
+  id           Int      @id @default(autoincrement())
+  name         String
+  booth_number String
+  start_date   DateTime
+  end_date     DateTime
+  website      String
+  fair_logo    String
+  fair_cover   String
+  address      Address?
+}
+
+model Address {
+  id           Int    @id @default(autoincrement())
+  street       String
+  house_number String
+  city         String
+  zip          String
+  state        String
+  fair         Fair   @relation(fields: [fairId], references: [id])
+  fairId       Int    @unique // One-to-one relation
+}
