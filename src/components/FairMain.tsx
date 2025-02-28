@@ -34,12 +34,12 @@ export function FairMain({
   })();
 
   return (
-    <main className="container mx-auto px-40 max-sm:px-4 max-xl:px-8 text-center flex-1">
+    <main className="container mx-auto px-40 max-2xl:px-20 max-sm:px-4 max-xl:px-8 text-center">
       <h2 className="text-3xl max-sm:text-2xl font-bold mb-6 text-blue uppercase">
         Infos
       </h2>
       <div className="flex justify-center items-center gap-14 text-left max-xl:flex-col max-xl:text-center max-xl:gap-0 mb-10">
-        <div className="left shrink-0">
+        <div className="shrink-0">
           <a
             href={fair.website}
             target="_blank"
@@ -54,8 +54,8 @@ export function FairMain({
             />
           </a>
         </div>
-        <div className="flex gap-14 items-center max-xl:flex-col max-xl:gap-0">
-          <div>
+        <div className="flex gap-8 items-center max-xl:flex-col max-xl:gap-0">
+          <div className="flex-grow">
             <div className="flex flex-col mb-6 justify-center">
               <p className="mb-1 font-bold">Stand: {fair.booth_number}</p>
               <p className="mb-1 font-bold">
@@ -78,14 +78,14 @@ export function FairMain({
               <h3 className="text-2xl font-bold mb-2 text-blue uppercase">
                 Beginnt in:
               </h3>
-              <div className="flex gap-6">
-                <div className="bg-blue text-white py-3 rounded-md font-bold uppercase text-center w-20">
+              <div className="flex gap-3 max-xl: justify-center">
+                <div className="bg-blue text-white rounded-md font-bold uppercase text-center w-20 h-20 flex flex-col items-center justify-center">
                   <p className="text-4xl">{countdownTimer[0]}</p>
                   <p className="text-xs">
                     {countdownTimer[0] === 1 ? "Tag" : "Tagen"}
                   </p>
                 </div>
-                <div className="bg-blue text-white py-3 rounded-md font-bold uppercase text-center w-20">
+                <div className="bg-blue text-white rounded-md font-bold uppercase text-center w-20 h-20 flex flex-col items-center justify-center">
                   <p className="text-4xl">{countdownTimer[1]}</p>
                   <p className="text-xs">
                     {countdownTimer[1] === 1 ? "Stunde" : "Stunden"}
@@ -94,7 +94,7 @@ export function FairMain({
               </div>
             </div>
           </div>
-          <p className="text-left">{infoText}</p>
+          <p className="text-left leading-relaxed flex-shrink">{infoText}</p>
         </div>
       </div>
       <a

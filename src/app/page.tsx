@@ -3,9 +3,80 @@ import { FairItem } from "@/components/FairItem";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import hrLabLogo from "../../public/img/hrlab_logo.svg";
+import FairsJSON from "../data/fairs.mock.json";
 
-// import FairsJSON from "../data/fairs.mock.json";
+/**
+ * Seeds the database with fair data from the JSON file
+ * Uses image paths from the public/img folder
+ */
+async function seedFairs() {
+  try {
+    type FairName = "ZPE Nord" | "ZPE Süd" | "ZPE Europe" | "Copetri";
 
+    const fairImagePaths: Record<FairName, { logo: string; cover: string }> = {
+      "ZPE Nord": {
+        logo: "/img/zp-nord-logo.png",
+        cover: "/img/zp-nord-cover.jpg",
+      },
+      "ZPE Süd": {
+        logo: "/img/zp-sued-logo.png",
+        cover: "/img/zp-sued-cover.jpg",
+      },
+      "ZPE Europe": {
+        logo: "/img/zp-europe-logo.png",
+        cover: "/img/zp-europe-cover.png",
+      },
+      Copetri: {
+        logo: "/img/copetri-logo.png",
+        cover: "/img/copetri-cover.jpg",
+      },
+    };
+
+    const existingFairs = await prisma.fair.findMany();
+    if (existingFairs.length > 0) {
+      console.log("Database already seeded. Skipping seed operation.");
+      return;
+    }
+
+    for (let i = 0; i < FairsJSON.fairs.length; i++) {
+      const fairData = FairsJSON.fairs[i];
+      const imagePaths = fairImagePaths[fairData.name as FairName] || {
+        logo: "/img/zp-nord-logo.png",
+        cover: "/img/hero.jpg",
+      };
+
+      await prisma.fair.create({
+        data: {
+          name: fairData.name,
+          booth_number: fairData.booth_number,
+          start_date: new Date(fairData.start_date),
+          end_date: new Date(fairData.end_date),
+          website: fairData.website,
+          fair_logo: imagePaths.logo,
+          fair_cover: imagePaths.cover,
+          address: {
+            create: {
+              street: fairData.address.street,
+              house_number: fairData.address.house_number,
+              city: fairData.address.city,
+              zip: fairData.address.zip,
+              state: fairData.address.state,
+            },
+          },
+        },
+      });
+      console.log(`Created fair: ${fairData.name}`);
+    }
+    console.log("Database seeding completed successfully");
+  } catch (error) {
+    console.error("Error seeding database:", error);
+  }
+}
+
+/**
+ * Retrieves all fairs from the database including their address information
+ * @returns Promise resolving to an array of fair objects with addresses
+ */
 function getFairs() {
   return prisma.fair.findMany({
     include: {
@@ -14,10 +85,18 @@ function getFairs() {
   });
 }
 
+/**
+ * Main page component that displays a list of upcoming fairs
+ * Seeds the database if empty and renders the fair items
+ */
 export default async function Home() {
-  // seedFairs();
+  const existingFairs = await prisma.fair.count();
+  if (existingFairs === 0) {
+    await seedFairs();
+  }
 
   const fairs = await getFairs();
+
   return (
     <>
       <Header
@@ -35,9 +114,11 @@ export default async function Home() {
           und erfahren Sie mehr über unsere Angebote und wie wir Ihnen helfen
           können, Ihre Ziele zu erreichen.
         </p>
+
         <h2 className="text-3xl max-sm:text-2xl font-bold mb-6 text-blue uppercase">
           Events:
         </h2>
+
         <ul className="flex justify-center gap-16 flex-wrap">
           {fairs.map((fair) => (
             <FairItem
@@ -56,89 +137,3 @@ export default async function Home() {
     </>
   );
 }
-
-// async function seedFairs() {
-//   await prisma.fair.create({
-//     data: {
-//       name: FairsJSON.fairs[0].name,
-//       booth_number: FairsJSON.fairs[0].booth_number,
-//       start_date: new Date(FairsJSON.fairs[0].start_date),
-//       end_date: new Date(FairsJSON.fairs[0].end_date),
-//       website: FairsJSON.fairs[0].website,
-//       fair_logo: "/img/zp-nord-logo.png",
-//       fair_cover: "/img/zp-nord-cover.jpg",
-//       address: {
-//         create: {
-//           street: FairsJSON.fairs[0].address.street,
-//           house_number: FairsJSON.fairs[0].address.house_number,
-//           city: FairsJSON.fairs[0].address.city,
-//           zip: FairsJSON.fairs[0].address.zip,
-//           state: FairsJSON.fairs[0].address.state,
-//         },
-//       },
-//     },
-//   });
-
-//   await prisma.fair.create({
-//     data: {
-//       name: FairsJSON.fairs[1].name,
-//       booth_number: FairsJSON.fairs[1].booth_number,
-//       start_date: new Date(FairsJSON.fairs[1].start_date),
-//       end_date: new Date(FairsJSON.fairs[1].end_date),
-//       website: FairsJSON.fairs[1].website,
-//       fair_logo: "/img/zp-sued-logo.png",
-//       fair_cover: "/img/zp-sued-cover.jpg",
-//       address: {
-//         create: {
-//           street: FairsJSON.fairs[1].address.street,
-//           house_number: FairsJSON.fairs[1].address.house_number,
-//           city: FairsJSON.fairs[1].address.city,
-//           zip: FairsJSON.fairs[1].address.zip,
-//           state: FairsJSON.fairs[1].address.state,
-//         },
-//       },
-//     },
-//   });
-
-//   await prisma.fair.create({
-//     data: {
-//       name: FairsJSON.fairs[2].name,
-//       booth_number: FairsJSON.fairs[2].booth_number,
-//       start_date: new Date(FairsJSON.fairs[2].start_date),
-//       end_date: new Date(FairsJSON.fairs[2].end_date),
-//       website: FairsJSON.fairs[2].website,
-//       fair_logo: "/img/zp-europe-logo.png",
-//       fair_cover: "/img/zp-europe-cover.png",
-//       address: {
-//         create: {
-//           street: FairsJSON.fairs[2].address.street,
-//           house_number: FairsJSON.fairs[2].address.house_number,
-//           city: FairsJSON.fairs[2].address.city,
-//           zip: FairsJSON.fairs[2].address.zip,
-//           state: FairsJSON.fairs[2].address.state,
-//         },
-//       },
-//     },
-//   });
-
-//   await prisma.fair.create({
-//     data: {
-//       name: FairsJSON.fairs[3].name,
-//       booth_number: FairsJSON.fairs[3].booth_number,
-//       start_date: new Date(FairsJSON.fairs[3].start_date),
-//       end_date: new Date(FairsJSON.fairs[3].end_date),
-//       website: FairsJSON.fairs[3].website,
-//       fair_logo: "/img/copetri-logo.png",
-//       fair_cover: "/img/copetri-cover.jpg",
-//       address: {
-//         create: {
-//           street: FairsJSON.fairs[3].address.street,
-//           house_number: FairsJSON.fairs[3].address.house_number,
-//           city: FairsJSON.fairs[3].address.city,
-//           zip: FairsJSON.fairs[3].address.zip,
-//           state: FairsJSON.fairs[3].address.state,
-//         },
-//       },
-//     },
-//   });
-// }
