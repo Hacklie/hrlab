@@ -112,7 +112,7 @@ export default async function Home() {
           darauf, Sie an unseren Ständen begrüßen zu dürfen und Ihnen unsere
           neuesten Produkte und Dienstleistungen vorzustellen. Besuchen Sie uns
           und erfahren Sie mehr über unsere Angebote und wie wir Ihnen helfen
-          können, Ihre Ziele zu erreichen.
+          können, Ihre Ziele zu erreichen!
         </p>
 
         <h2 className="text-3xl max-sm:text-2xl font-bold mb-6 text-blue uppercase">
